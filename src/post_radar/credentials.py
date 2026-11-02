@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import sys
-from typing import Protocol
+from collections.abc import Callable
+from typing import Protocol, cast
 
 from post_radar.models import ExternalError
 
@@ -32,7 +33,8 @@ class WindowsCredentialStore:
             raise ExternalError("credential_store_unavailable", permanent=True)
         from keyring.backends.Windows import WinVaultKeyring
 
-        return WinVaultKeyring()  # type: ignore[no-untyped-call]
+        factory = cast(Callable[[], Vault], WinVaultKeyring)
+        return factory()
 
     def get(self, name: str) -> str | None:
         _name(name)
