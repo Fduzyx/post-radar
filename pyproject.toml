@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "post-radar"
+version = "0.1.0"
+description = "Monitor feeds using your keywords, AI criteria, and email notifications"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+  "httpx>=0.28,<0.29",
+  "pydantic>=2.11,<3",
+  "keyring>=25.6,<26",
+  "feedparser>=6.0.11,<7",
+]
+
+[project.urls]
+Repository = "https://github.com/Fduzyx/post-radar"
+
+[project.scripts]
+post-radar = "post_radar.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=9.0.3,<10", "pytest-asyncio>=1.1,<2", "ruff>=0.12,<0.13", "mypy>=1.17,<2", "build>=1.2,<2", "pip-audit>=2.9,<3"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/post_radar"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/post_radar", "tests", "config/example.toml", "docs", "scripts/check_release.py", "README.md", "LICENSE", "SECURITY.md", "CONTRIBUTING.md", "CHANGELOG.md", "pyproject.toml", "uv.lock", "AGENTS.md"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["post_radar"]
+
+[[tool.mypy.overrides]]
+module = ["feedparser", "feedparser.*"]
+ignore_missing_imports = true

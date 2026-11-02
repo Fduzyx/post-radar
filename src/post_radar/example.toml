@@ -1,0 +1,38 @@
+# Copy this file to config/local.toml before editing.
+# Never put API keys or SMTP passwords in this file.
+state_dir = "../state"
+retention_days = 7
+max_attempts = 3
+
+[api]
+enabled = false
+protocol = "responses" # or chat_completions if the provider supports strict JSON Schema
+base_url = "https://api.openai.com/v1"
+model = "configure-your-model"
+daily_budget_usd = 0.0
+input_usd_per_million = 0.0 # Set the provider's current price before enabling.
+output_usd_per_million = 0.0
+max_output_tokens = 1024
+
+[smtp]
+enabled = false
+host = "smtp.example.invalid"
+port = 465
+mode = "ssl" # or starttls, usually with port 587
+username = "sender@example.invalid"
+sender = "sender@example.invalid"
+
+[[sources]]
+id = "events"
+url = "https://feed.example.invalid/events.xml"
+poll_interval_seconds = 120
+backfill = false
+
+[[rules]]
+id = "online-workshops"
+source_ids = ["events"]
+keywords_any = ["workshop", "lecture"]
+keywords_all = []
+exclude = ["cancelled", "recap"]
+requirements = "Notify only upcoming events that explicitly allow online attendance and provide registration instructions. If information is missing, return uncertain."
+recipients = ["reader@example.invalid"]
